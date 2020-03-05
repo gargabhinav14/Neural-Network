@@ -44,9 +44,20 @@ public class Main {
 //        m2.print();
 //</editor-fold>
         double[][] input = {{0, 0, 0, 0}, {3, 3, 3, 3}, {6, 6, 6, 6}, {9, 9, 9, 9}};
-        double[][] output = {{0}, {0.3}, {0.6}, {1}};
+        double[][] output = {{0.1}, {0.3}, {0.6}, {1}};
         NeuralNetwork network = new NeuralNetwork(4, 2, 1);
+        
+        int[] hiddenNodesArray = new int[] {2, 3, 4};
+        
+        NeuralNetwork n2 = new NeuralNetwork(4, hiddenNodesArray, 1);
+        
+        /**
+         * create new network with NeuralNetwork (input_nodes, layer1_nodes, layer2_nodes, layer3_nodes, .... , output_nodes)
+         * create new network with NeuralNetwork (input_nodes, array[layer1_nodes, layer2_nodes, layer3_nodes, .... ], output_nodes)
+         */
 
+        
+        
         //<editor-fold defaultstate="collapsed" desc="MISC">
 //        int count0 = 0;
 //        int count1 = 0;
@@ -67,7 +78,7 @@ public class Main {
 //        network.bias_output.print();
 //</editor-fold>
 
-        for (int i = 0; i < 10000; i++) {
+        for (int i = 0; i < 100000; i++) {
             int rnd = new Random().nextInt(input.length);
             //<editor-fold defaultstate="collapsed" desc="Misc">
 //            double k = Math.floor(Math.floor(Math.random() * 10) / 2);
@@ -91,7 +102,7 @@ public class Main {
 
             network.train(input[rnd], output[rnd]);
         }
-//<editor-fold defaultstate="collapsed" desc="Misc">
+        //<editor-fold defaultstate="collapsed" desc="Misc">
 //        System.out.println("INPUT HIDDEN WEIGHTS");
 //        network.wieghts_input_hidden.print();
 //        System.out.println("HIDDEN OUTPUT WEIGHTS");

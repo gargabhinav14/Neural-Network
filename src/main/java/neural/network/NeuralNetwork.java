@@ -5,6 +5,7 @@
  */
 package neural.network;
 
+import java.util.ArrayList;
 import neural.network.Matrix;
 
 /**
@@ -13,6 +14,7 @@ import neural.network.Matrix;
  */
 public class NeuralNetwork {
 
+    //<editor-fold defaultstate="collapsed" desc="For Single Layer">
     int inupt_nodes;
     int hidden_nodes;
     int output_nodes;
@@ -27,7 +29,13 @@ public class NeuralNetwork {
     Matrix output_outs;
 
     double learning_rate;
+//</editor-fold>
 
+    //<editor-fold defaultstate="collapsed" desc="For Multiple Layers">
+    ArrayList<Matrix> allWeightMatrices = new ArrayList<>();
+    ArrayList<Matrix> allBiasMatrices = new ArrayList<>();
+
+//</editor-fold>
     public NeuralNetwork(int inupt_nodes, int hidden_nodes, int output_nodes) {
         this.inupt_nodes = inupt_nodes;
         this.hidden_nodes = hidden_nodes;
@@ -46,6 +54,33 @@ public class NeuralNetwork {
         this.bias_output.randomize();
 
         this.learning_rate = 0.1;
+
+    }
+
+    public NeuralNetwork(int input_nodes, int[] hidden_nodes_array, int output_nodes) {
+        //<editor-fold defaultstate="collapsed" desc="DOC">
+        /**
+         * layers = (hidden_nodes_array.length);
+         *
+         * for (int i = 0 ; i < layers ; i ++) { layer[i] =
+         * hidden_nodes_array[i]; get number of nodes per layer in layerArray
+         *
+         * }
+         *
+         * ArrayList<Matrix> matricesWightsArray ; numberOfMatrices[] = new
+         * int[numberOfLayers - 1]
+         *
+         *
+         * for (int i = 0 ; i < hidden_nodes_array.length ; i ++) { itne weight
+         * / bias matrices banenge if(i = 0) { Matrix m = new Matrix
+         * (hidden_nodes_array[i], input_nodes) } else { Matrix m = new Matrix
+         * (hidden_nodes_array[i], hidden_nodes_array[i-1]) } }
+         *
+         */
+        //</editor-fold>
+
+        this.allWeightMatrices = createWeightMatrices(input_nodes, hidden_nodes_array);
+        this.allBiasMatrices = createBiasMatrices(hidden_nodes_array);
 
     }
 
@@ -90,24 +125,20 @@ public class NeuralNetwork {
          */
 //        System.out.println("Hidden Outs = ");
 //        this.hidden_outs.print();
-
 //        System.out.println("Weights input hidden= ");
 //        this.wieghts_input_hidden.print();
 //        System.out.println("Input Matrix= ");
 //        input_matrix.print();
-
         this.hidden_outs = Matrix.vectorMultiply(this.wieghts_input_hidden, input_matrix);
 //        System.out.println("Hidden Outs After Multiplicat8ion");
 //        this.hidden_outs.print();
 
 //        System.out.println("Hidden Bias= ");
 //        this.bias_hidden.print();
-
         this.hidden_outs.add(this.bias_hidden);
 
 //        System.out.println("Hidden Outs After Bias Add= ");
 //        this.hidden_outs.print();
-
         this.hidden_outs.doSigmoid();
 //        System.out.println("Hidden Outs after Sigmoid =");
 //        this.hidden_outs.print();
@@ -166,6 +197,44 @@ public class NeuralNetwork {
          *
          *
          */
+    }
+
+    private ArrayList<Matrix> createWeightMatrices(int input_nodes, int[] hidden_nodes_array) {
+
+        ArrayList<Matrix> weightMatrices = new ArrayList<>();
+
+        //for Each Layer
+        for (int i = 0; i < hidden_nodes_array.length; i++) {
+
+            //create new ArrayList for each layer to store all matrices
+//            ArrayList<Matrix> wieghtMatricesPerLayer = new ArrayList<>();
+            Matrix m = null;
+            if (i == 0) {
+                m = new Matrix(hidden_nodes_array[i], input_nodes);
+            } else {
+                m = new Matrix(hidden_nodes_array[i], hidden_nodes_array[i - 1]);
+            }
+            m.randomize();
+            weightMatrices.add(m);
+        }
+//        System.out.println("ALL WIEGHT MATRICES" + this.allWeightMatrices);
+
+        return weightMatrices;
+    }
+
+    private ArrayList<Matrix> createBiasMatrices(int[] hidden_nodes_array) {
+        ArrayList<Matrix> biasMatrices = new ArrayList<>();
+        
+        for(int i = 0 ; i < hidden_nodes_array.length ; i ++)
+        {
+            Matrix m = new Matrix(hidden_nodes_array[i], 1);
+            m.randomize();
+            biasMatrices.add(m);
+            
+        }
+        
+
+        return biasMatrices;
     }
 
 }
