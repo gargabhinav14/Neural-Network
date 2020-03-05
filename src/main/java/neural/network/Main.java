@@ -43,64 +43,68 @@ public class Main {
 //        Matrix m2 = Matrix.vectorMultiply(mat1, mat2);
 //        m2.print();
 //</editor-fold>
-        double[][] input = {{1, 0}, {1, 0}, {0, 0}, {1, 1}};
-        double[][] output = {{1}, {1}, {0}, {0}};
-        NeuralNetwork network = new NeuralNetwork(2, 2, 1);
+        double[][] input = {{0, 0, 0, 0}, {3, 3, 3, 3}, {6, 6, 6, 6}, {9, 9, 9, 9}};
+        double[][] output = {{0}, {0.3}, {0.6}, {1}};
+        NeuralNetwork network = new NeuralNetwork(4, 2, 1);
 
-        int count0 = 0;
-        int count1 = 0;
-        int count2 = 0;
-        int count3 = 0;
+        //<editor-fold defaultstate="collapsed" desc="MISC">
+//        int count0 = 0;
+//        int count1 = 0;
+//        int count2 = 0;
+//        int count3 = 0;
 
-        System.out.println("testing now with learning rate : " + network.learning_rate);
-//        double[] totalOutput = network.feedForward(input);
+//        System.out.println("testing now with learning rate : " + network.learning_rate);
+////        double[] totalOutput = network.feedForward(input);
+//
+//        System.out.println("INPUT HIDDEN WEIGHTS");
+//        network.wieghts_input_hidden.print();
+//        System.out.println("HIDDEN OUTPUT WEIGHTS");
+//        network.wieghts_hidden_output.print();
+//
+//        System.out.println("BIAS HIDDEN");
+//        network.bias_hidden.print();
+//        System.out.println("BIAS OUTPUT");
+//        network.bias_output.print();
+//</editor-fold>
 
-        System.out.println("INPUT HIDDEN WEIGHTS");
-        network.wieghts_input_hidden.print();
-        System.out.println("HIDDEN OUTPUT WEIGHTS");
-        network.wieghts_hidden_output.print();
-
-        System.out.println("BIAS HIDDEN");
-        network.bias_hidden.print();
-        System.out.println("BIAS OUTPUT");
-        network.bias_output.print();
-
-        for (int i = 0; i < 1000000; i++) {
-//            Random generator = new Random();
+        for (int i = 0; i < 10000; i++) {
             int rnd = new Random().nextInt(input.length);
+            //<editor-fold defaultstate="collapsed" desc="Misc">
 //            double k = Math.floor(Math.floor(Math.random() * 10) / 2);
 //            int value = (int) k;
 //            if (value == 4) {
 //                value = 3;
 //            }
 //            System.out.println(value);
-            if (rnd == 0) {
-                count0++;
-            }
-            if (rnd == 1) {
-                count1++;
-            }
-            if (rnd == 2) {
-                count2++;
-            }if (rnd == 3) {
-                count3++;
-            }
-            
+//            if (rnd == 0) {
+//                count0++;
+//            }
+//            if (rnd == 1) {
+//                count1++;
+//            }
+//            if (rnd == 2) {
+//                count2++;
+//            }if (rnd == 3) {
+//                count3++;
+//            }
+            //</editor-fold>
+
             network.train(input[rnd], output[rnd]);
         }
-
-        System.out.println("INPUT HIDDEN WEIGHTS");
-        network.wieghts_input_hidden.print();
-        System.out.println("HIDDEN OUTPUT WEIGHTS");
-        network.wieghts_hidden_output.print();
-
-        System.out.println("BIAS HIDDEN");
-        network.bias_hidden.print();
-        System.out.println("BIAS OUTPUT");
-        network.bias_output.print();
+//<editor-fold defaultstate="collapsed" desc="Misc">
+//        System.out.println("INPUT HIDDEN WEIGHTS");
+//        network.wieghts_input_hidden.print();
+//        System.out.println("HIDDEN OUTPUT WEIGHTS");
+//        network.wieghts_hidden_output.print();
+//
+//        System.out.println("BIAS HIDDEN");
+//        network.bias_hidden.print();
+//        System.out.println("BIAS OUTPUT");
+//        network.bias_output.print();
+//</editor-fold>
 
         System.out.println("+++++OUTPUTS+++++++");
-        System.out.println("Count0:"+count0+"||Count1:"+count1+"||Count2:"+count2+"||Count3:"+count3);
+//        System.out.println("Count0:"+count0+"||Count1:"+count1+"||Count2:"+count2+"||Count3:"+count3);
         double[] test1 = network.feedForward(input[0]);
         double[] test2 = network.feedForward(input[1]);
         double[] test3 = network.feedForward(input[2]);
