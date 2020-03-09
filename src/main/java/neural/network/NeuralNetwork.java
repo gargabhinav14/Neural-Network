@@ -53,7 +53,7 @@ public class NeuralNetwork {
         this.bias_hidden.randomize();
         this.bias_output.randomize();
 
-        this.learning_rate = 0.1;
+        this.learning_rate = 0.1 ;
 
     }
 

@@ -43,13 +43,18 @@ public class Main {
 //        Matrix m2 = Matrix.vectorMultiply(mat1, mat2);
 //        m2.print();
 //</editor-fold>
-        double[][] input = {{0, 0, 0, 0}, {3, 3, 3, 3}, {6, 6, 6, 6}, {9, 9, 9, 9}};
-        double[][] output = {{0.1}, {0.3}, {0.6}, {1}};
-        NeuralNetwork network = new NeuralNetwork(4, 2, 1);
+        double[][] input = {{0,0,0,0}, {3,3,3,3}, {6,6,6,6}, {9,9,9,9}};
+        double[][] output = {{0}, {0.3}, {0.6}, {0.9}};
         
-        int[] hiddenNodesArray = new int[] {2, 3, 4};
+        double[][] test1 = {{2,2,2,2}};
+        double[][] test2 = {{4,4,4,4}};
+        double[][] test3 = {{5,5,5,5}};
+        double[][] test4 = {{8,8,8,8}};
+        NeuralNetwork network = new NeuralNetwork(4, 16, 1);
         
-        NeuralNetwork n2 = new NeuralNetwork(4, hiddenNodesArray, 1);
+//        int[] hiddenNodesArray = new int[] {2, 3, 4};
+//        2
+//        NeuralNetwork n2 = new NeuralNetwork(4, hiddenNodesArray, 1);
         
         /**
          * create new network with NeuralNetwork (input_nodes, layer1_nodes, layer2_nodes, layer3_nodes, .... , output_nodes)
@@ -116,15 +121,15 @@ public class Main {
 
         System.out.println("+++++OUTPUTS+++++++");
 //        System.out.println("Count0:"+count0+"||Count1:"+count1+"||Count2:"+count2+"||Count3:"+count3);
-        double[] test1 = network.feedForward(input[0]);
-        double[] test2 = network.feedForward(input[1]);
-        double[] test3 = network.feedForward(input[2]);
-        double[] test4 = network.feedForward(input[3]);
+        double[] testa = network.feedForward(test1[0]);
+        double[] testb = network.feedForward(test2[0]);
+        double[] testc = network.feedForward(test3[0]);
+        double[] testd = network.feedForward(test4[0]);
 
-        Matrix.toMatrix(test1).print();
-        Matrix.toMatrix(test2).print();
-        Matrix.toMatrix(test3).print();
-        Matrix.toMatrix(test4).print();
+        Matrix.toMatrix(testa).print();
+        Matrix.toMatrix(testb).print();
+        Matrix.toMatrix(testc).print();
+        Matrix.toMatrix(testd).print();
 
     }
 
