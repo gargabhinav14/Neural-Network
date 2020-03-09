@@ -5,6 +5,7 @@
  */
 package neural.network;
 
+import com.sun.javafx.geom.Matrix3f;
 import java.util.ArrayList;
 import jdk.nashorn.internal.runtime.PropertyMap;
 
@@ -124,6 +125,8 @@ public class MultipleLayerNeuralNetwork {
     }
 
     //</editor-fold>
+   
+    //<editor-fold defaultstate="collapsed" desc="fixAllWeightsAndBiases(outputs)">
     private void fixAllWeightsAndBiases(double[] desiredOutput) {
 
         //calculate Error Matrices
@@ -138,55 +141,6 @@ public class MultipleLayerNeuralNetwork {
         fixBiasMatrices();
     }
 
-    private void fixWieghtMatrices() {
-        //we have to start fixing from the back
-
-//        Matrix previousError = null;
-        for (int i = hidden_nodes_array_length; i >= 0; i--) {
-
-//            if (i != hidden_nodes_array_length) {
-            this.weightMatrices.set(
-                    /**
-                     * SIZE*
-                     */
-                    this.weightMatrices.size() - i,
-                    /**
-                     * ELEMENT*
-                     */
-                    fixWeightMatrix(this.errorMatrices.get(i), this.outputMatrices.get(i), this.weightMatrices.get(this.weightMatrices.size() - i))
-            );
-//            }
-//            else
-//            {
-//                this.weightMatrices.set(
-//                        /**
-//                         * SIZE*
-//                         */
-//                        this.weightMatrices.size() - i,
-//                        /**
-//                         * ELEMENT*
-//                         */
-//                        fixWeightMatrix(this.errorMatrices.get(i), this.outputMatrices.get(i), this.weightMatrices.get(this.weightMatrices.size() - i))
-//                );
-//                
-//            }
-        }
-
-    }
-
-    private Matrix fixWeightMatrix(Matrix error, Matrix output, Matrix weight) {
-
-        return Matrix.vectorMultiply(
-                Matrix.scalarMultiply(
-                        Matrix.scalarMultiply(
-                                Matrix.doDerivaitveSigmoid(output), error
-                        ), this.learningRate
-                ),
-                Matrix.transpose(weight)
-        );
-
-    }
-
     //<editor-fold defaultstate="collapsed" desc="calculateErrorMatrices(desiredOutput)">
     private void calculateErrorMatrices(double[] desiredOutput) {
         for (int i = this.hidden_nodes_array_length - 1; i <= 0; i--) {
@@ -199,30 +153,61 @@ public class MultipleLayerNeuralNetwork {
     }
     //</editor-fold>
 
+    //<editor-fold defaultstate="collapsed" desc="Fix Wieght Martices">
+    private void fixWieghtMatrices() {
+        //we have to start fixing from the back
+
+//        Matrix previousError = null;
+        for (int i = hidden_nodes_array_length; i >= 0; i--) {
+
+            //add weight to deltas
+            this.weightMatrices.get(this.weightMatrices.size() - i).add(
+                    //calculate weight delats
+                    fixWeightMatrix(this.errorMatrices.get(i), this.outputMatrices.get(i), this.weightMatrices.get(this.weightMatrices.size() - i)));
+
+            //set weight in wieght Matrices
+            this.weightMatrices.set(this.weightMatrices.size() - i, this.weightMatrices.get(this.weightMatrices.size() - i));
+        }
+
+    }
+
+    private Matrix fixWeightMatrix(Matrix error, Matrix output, Matrix weight) {
+        return Matrix.vectorMultiply(
+                Matrix.scalarMultiply(
+                        Matrix.scalarMultiply(
+                                Matrix.doDerivaitveSigmoid(output), error
+                        ), this.learningRate
+                ),
+                Matrix.transpose(weight)
+        );
+
+    }
+    //</editor-fold>
+    
+    //<editor-fold defaultstate="collapsed" desc="fix Bias Matrices">
     private void fixBiasMatrices() {
 
         for (int i = hidden_nodes_array_length; i >= 0; i--) {
 
-//            if (i != hidden_nodes_array_length) {
-            this.biasMatrices.set(
-                    /**
-                     * SIZE*
-                     */
-                    this.biasMatrices.size() - i,
-                    /**
-                     * ELEMENT*
-                     */
-                    fixBiasMatrix(this.errorMatrices.get(i), this.biasMatrices.get(this.biasMatrices.size() - i))
-            );
+            //add bias to deltas
+            this.biasMatrices.get(this.biasMatrices.size() - i).add(
+                    //calculate bias deltas
+                    fixBiasMatrix(this.errorMatrices.get(i), this.outputMatrices.get(i)));
+
+            //set bias in bias Matrices
+            this.biasMatrices.set(this.biasMatrices.size() - i,this.biasMatrices.get(this.biasMatrices.size() - i));
         }
     }
 
-    private Matrix fixBiasMatrix(Matrix error, Matrix bias) {
+    private Matrix fixBiasMatrix(Matrix error, Matrix output) {
 
-        return  Matrix.scalarMultiply(
-                        Matrix.scalarMultiply(
-                                Matrix.doDerivaitveSigmoid(output), error
-                        ), this.learningRate
-                );
+        return Matrix.scalarMultiply(
+                Matrix.scalarMultiply(
+                        Matrix.doDerivaitveSigmoid(output), error
+                ), this.learningRate
+        );
     }
+    //</editor-fold>
+//</editor-fold>
+
 }
