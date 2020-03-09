@@ -220,5 +220,14 @@ public class MultipleLayerNeuralNetwork {
     //</editor-fold>
     //</editor-fold>
 
-    
+    //<editor-fold defaultstate="collapsed" desc="feedForward(inputs)">
+    public double[] feedForward(double[] inputs) {
+        //COMPUTATION OF A GUESS
+        
+         calulateOutput(inputs);
+         
+         return this.outputMatrices.get(this.hidden_nodes_array_length).toArray();
+    }
+    //</editor-fold>
+
 }

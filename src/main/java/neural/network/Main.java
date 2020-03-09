@@ -69,7 +69,7 @@ public class Main {
         int count2 = 0;
         int count3 = 0;
 //        System.out.println("testing now with learning rate : " + network.learning_rate);
-        System.out.println("testing now with learning rate : " + multiNetwork.learning_rate);
+        System.out.println("testing now with learning rate : " + multiNetwork.learningRate);
 ////        double[] totalOutput = network.feedForward(input);
 //
 //        System.out.println("INPUT HIDDEN WEIGHTS");
@@ -121,10 +121,10 @@ public class Main {
 
         System.out.println("+++++OUTPUTS+++++++");
 //        System.out.println("Count0:"+count0+"||Count1:"+count1+"||Count2:"+count2+"||Count3:"+count3);
-        double[] testa = network.feedForward(test1[0]);
-        double[] testb = network.feedForward(test2[0]);
-        double[] testc = network.feedForward(test3[0]);
-        double[] testd = network.feedForward(test4[0]);
+        double[] testa = multiNetwork.feedForward(test1[0]);
+        double[] testb = multiNetwork.feedForward(test2[0]);
+        double[] testc = multiNetwork.feedForward(test3[0]);
+        double[] testd = multiNetwork.feedForward(test4[0]);
 
         Matrix.toMatrix(testa).print();
         Matrix.toMatrix(testb).print();
