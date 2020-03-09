@@ -22,15 +22,32 @@ public class Main {
         double[][] input = {{0, 1}, {1, 0}, {0, 0}, {1, 1}};
         double[][] output = {{1}, {1}, {0}, {0}};
 
-//        NeuralNetwork network = new NeuralNetwork(2, 16, 1);
-        MultipleLayerNeuralNetwork multiNetwork = new MultipleLayerNeuralNetwork(2, new int[]{4,2,2}, 1);
+//        NeuralNetwork network = new NeuralNetwork(2, 2, 1);
+        MultipleLayerNeuralNetwork multiNetwork = new MultipleLayerNeuralNetwork(2, new int[]{2}, 1);
 
+//        for (int i = 0; i < multiNetwork.weightMatrices.size(); i++) {
+//            multiNetwork.weightMatrices.get(i).print();
+//
+//        }
+//        network.wieghts_input_hidden.print();
+//        network.wieghts_hidden_output.print();
+
+//        }
         for (int i = 0; i < 100000; i++) {
             int rnd = new Random().nextInt(input.length);
 
             multiNetwork.train(input[rnd], output[rnd]);
 //            network.train(input[rnd], output[rnd]);
         }
+
+        System.out.println("+++++NEW WEIGHTS+++++++");
+
+//        for (int i = 0; i < multiNetwork.weightMatrices.size(); i++) {
+//            multiNetwork.weightMatrices.get(i).print();
+//
+//        }
+//        network.wieghts_input_hidden.print();
+//        network.wieghts_hidden_output.print();
 
         System.out.println("+++++OUTPUTS+++++++");
         //<editor-fold defaultstate="collapsed" desc="test">
@@ -40,10 +57,10 @@ public class Main {
         double[] testd = multiNetwork.feedForward(input[3]);
 
 //</editor-fold>
-//          double[] testa = network.feedForward(input[0]);
+//        double[] testa = network.feedForward(input[0]);
 //        double[] testb = network.feedForward(input[1]);
 //        double[] testc = network.feedForward(input[2]);
-////        double[] testd = network.feedForward(input[3]);
+//        double[] testd = network.feedForward(input[3]);
         Matrix.toMatrix(testa).print();
         Matrix.toMatrix(testb).print();
         Matrix.toMatrix(testc).print();

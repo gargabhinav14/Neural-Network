@@ -20,6 +20,8 @@ public class MultipleLayerNeuralNetwork {
     ArrayList<Matrix> biasMatrices = new ArrayList<>();     //0 ---> 1 ---> 2 ---> 3
     ArrayList<Matrix> outputMatrices = new ArrayList<>();   //3 ---> 2 ---> 1 ---> 0
     ArrayList<Matrix> errorMatrices = new ArrayList<>();    //3 ---> 2 ---> 1 ---> 0
+
+    Matrix inputMatrix;
     int inputNodes;
     int outputNodes;
     double learningRate;
@@ -111,6 +113,7 @@ public class MultipleLayerNeuralNetwork {
 
         this.outputMatrices = new ArrayList<>();   //3 ---> 2 ---> 1 ---> 0
         this.errorMatrices = new ArrayList<>();    //3 ---> 2 ---> 1 ---> 0
+        this.inputMatrix = Matrix.toMatrix(inputs);
 
         calulateOutput(inputs);
 
@@ -169,22 +172,20 @@ public class MultipleLayerNeuralNetwork {
     //<editor-fold defaultstate="collapsed" desc="calculateErrorMatrices(desiredOutput)">
     private void calculateErrorMatrices(double[] desiredOutput) {
         int k = 0;
-        
+
         this.errorMatrices.add(Matrix.toMatrix(desiredOutput).subtract(this.outputMatrices.get(this.hidden_nodes_array_length)));
 
         for (int i = this.hidden_nodes_array_length; i > 0; i--) {
 //            if (i == this.hidden_nodes_array_length) {
 
 //                this.errorMatrices.add(this.outputMatrices.get(this.hidden_nodes_array_length).subtract(Matrix.toMatrix(desiredOutput)));
-                this.errorMatrices.add(Matrix.vectorMultiply(Matrix.transpose(this.weightMatrices.get(i)), this.errorMatrices.get(k)));
-//            } else {
-//                this.errorMatrices.add(Matrix.vectorMultiply(Matrix.transpose(this.weightMa]\
-]es.get(i)), this.errorMatrices.get(k)));
-                k++;
+//            } else {/
+            this.errorMatrices.add(Matrix.vectorMultiply(Matrix.transpose(this.weightMatrices.get(i)), this.errorMatrices.get(k)));
+            k++;
 
 //            }
         }
-        
+
         Collections.reverse(this.errorMatrices);
     }
     //</editor-fold>
@@ -193,35 +194,48 @@ public class MultipleLayerNeuralNetwork {
     private void fixWieghtMatrices() {
         //we have to start fixing from the back
 //        int k = 0;
+        Matrix deltaW = null;
+        for (int i = hidden_nodes_array_length; i >= 0; i--) {
 
-        for (int i = 0; i <=hidden_nodes_array_length; i++) {
-
-            Matrix deltaW = fixWeightMatrix(this.errorMatrices.get(i), this.outputMatrices.get(i), this.weightMatrices.get(i));
-
-            if (deltaW.rows == 1) {
-                double numDelta = deltaW.data[0][0];
-                this.weightMatrices.get(i).add(numDelta);
-
+            if (i != 0) {
+                deltaW = fixWeightMatrix(this.errorMatrices.get(i), this.outputMatrices.get(i), this.outputMatrices.get(i - 1)/**
+                 * , this.weightMatrices.get(i)*
+                 */
+                );
             } else {
-                //add weight to deltas
-                this.weightMatrices.get(i).add(deltaW);
+                deltaW = fixWeightMatrix(this.errorMatrices.get(i), this.outputMatrices.get(i), this.inputMatrix/**
+                 * , this.weightMatrices.get(i)*
+                 */
+                );
+
             }
+//            if (deltaW.rows == 1) {
+//                double numDelta = deltaW.data[0][0];
+//                this.weightMatrices.get(i).add(numDelta);
+
+//            } else {
+            //add weight to deltas
+            this.weightMatrices.get(i).add(deltaW);
+//            }
 //            k++;
         }
 
     }
 
-    private Matrix fixWeightMatrix(Matrix error, Matrix output, Matrix weight) {
+    private Matrix fixWeightMatrix(Matrix error, Matrix output, Matrix previousOutput /**
+     * ,Matrix weight*
+     */
+    ) {
         return Matrix.vectorMultiply(
                 Matrix.scalarMultiply(
                         Matrix.scalarMultiply(
                                 Matrix.doDerivaitveSigmoid(output), /**
                                  * Matrix.toMatrix(error.data[i])*
-                                 */ 
+                                 */
                                 error
                         ), this.learningRate
                 ),
-                Matrix.transpose(weight)
+                Matrix.transpose(previousOutput)
         ) //                            )
                 ;
     }
@@ -230,10 +244,9 @@ public class MultipleLayerNeuralNetwork {
     //<editor-fold defaultstate="collapsed" desc="fix Bias Matrices">
     private void fixBiasMatrices() {
 
-        int k = 0;
         for (int i = hidden_nodes_array_length; i >= 0; i--) {
 
-            Matrix deltaBias = fixBiasMatrix(this.errorMatrices.get(k), this.outputMatrices.get(i));
+            Matrix deltaBias = fixBiasMatrix(this.errorMatrices.get(i), this.outputMatrices.get(i));
             //add bias to deltas
             if (deltaBias.rows == 1) {
                 double numDelta = deltaBias.data[0][0];
@@ -242,7 +255,6 @@ public class MultipleLayerNeuralNetwork {
             } else {
                 this.biasMatrices.get(i).add(deltaBias);
             }
-            k++;
         }
 
     }
@@ -262,6 +274,10 @@ public class MultipleLayerNeuralNetwork {
     //<editor-fold defaultstate="collapsed" desc="feedForward(inputs)">
     public double[] feedForward(double[] inputs) {
         //COMPUTATION OF A GUESS
+
+        this.outputMatrices = new ArrayList<>();   //3 ---> 2 ---> 1 ---> 0
+        this.errorMatrices = new ArrayList<>();    //3 ---> 2 ---> 1 ---> 0
+        this.inputMatrix = Matrix.toMatrix(inputs);
 
         calulateOutput(inputs);
 
