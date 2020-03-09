@@ -43,33 +43,33 @@ public class Main {
 //        Matrix m2 = Matrix.vectorMultiply(mat1, mat2);
 //        m2.print();
 //</editor-fold>
-        double[][] input = {{0,0,0,0}, {3,3,3,3}, {6,6,6,6}, {9,9,9,9}};
+        double[][] input = {{0, 0, 0, 0}, {3, 3, 3, 3}, {6, 6, 6, 6}, {9, 9, 9, 9}};
         double[][] output = {{0}, {0.3}, {0.6}, {0.9}};
-        
-        double[][] test1 = {{2,2,2,2}};
-        double[][] test2 = {{4,4,4,4}};
-        double[][] test3 = {{5,5,5,5}};
-        double[][] test4 = {{8,8,8,8}};
-        NeuralNetwork network = new NeuralNetwork(4, 16, 1);
-        
-//        int[] hiddenNodesArray = new int[] {2, 3, 4};
+
+        double[][] test1 = {{2, 2, 2, 2}};
+        double[][] test2 = {{4, 4, 4, 4}};
+        double[][] test3 = {{5, 5, 5, 5}};
+        double[][] test4 = {{8, 8, 8, 8}};
+//        NeuralNetwork network = new NeuralNetwork(4, 16, 1);
+        int[] hiddenNodesArray = new int[]{2, 2, 2};
+
+        MultipleLayerNeuralNetwork multiNetwork = new MultipleLayerNeuralNetwork(2, hiddenNodesArray, 1);
+
 //        2
 //        NeuralNetwork n2 = new NeuralNetwork(4, hiddenNodesArray, 1);
-        
         /**
-         * create new network with NeuralNetwork (input_nodes, layer1_nodes, layer2_nodes, layer3_nodes, .... , output_nodes)
-         * create new network with NeuralNetwork (input_nodes, array[layer1_nodes, layer2_nodes, layer3_nodes, .... ], output_nodes)
+         * create new network with NeuralNetwork (input_nodes, layer1_nodes,
+         * layer2_nodes, layer3_nodes, .... , output_nodes) create new network
+         * with NeuralNetwork (input_nodes, array[layer1_nodes, layer2_nodes,
+         * layer3_nodes, .... ], output_nodes)
          */
-
-        
-        
         //<editor-fold defaultstate="collapsed" desc="MISC">
-//        int count0 = 0;
-//        int count1 = 0;
-//        int count2 = 0;
-//        int count3 = 0;
-
+        int count0 = 0;
+        int count1 = 0;
+        int count2 = 0;
+        int count3 = 0;
 //        System.out.println("testing now with learning rate : " + network.learning_rate);
+        System.out.println("testing now with learning rate : " + multiNetwork.learning_rate);
 ////        double[] totalOutput = network.feedForward(input);
 //
 //        System.out.println("INPUT HIDDEN WEIGHTS");
@@ -82,30 +82,30 @@ public class Main {
 //        System.out.println("BIAS OUTPUT");
 //        network.bias_output.print();
 //</editor-fold>
-
         for (int i = 0; i < 100000; i++) {
             int rnd = new Random().nextInt(input.length);
             //<editor-fold defaultstate="collapsed" desc="Misc">
-//            double k = Math.floor(Math.floor(Math.random() * 10) / 2);
-//            int value = (int) k;
-//            if (value == 4) {
-//                value = 3;
-//            }
+            double k = Math.floor(Math.floor(Math.random() * 10) / 2);
+            int value = (int) k;
+            if (value == 4) {
+                value = 3;
+            }
 //            System.out.println(value);
-//            if (rnd == 0) {
-//                count0++;
-//            }
-//            if (rnd == 1) {
-//                count1++;
-//            }
-//            if (rnd == 2) {
-//                count2++;
-//            }if (rnd == 3) {
-//                count3++;
-//            }
+            if (rnd == 0) {
+                count0++;
+            }
+            if (rnd == 1) {
+                count1++;
+            }
+            if (rnd == 2) {
+                count2++;
+            }
+            if (rnd == 3) {
+                count3++;
+            }
             //</editor-fold>
 
-            network.train(input[rnd], output[rnd]);
+            multiNetwork.train(input[rnd], output[rnd]);
         }
         //<editor-fold defaultstate="collapsed" desc="Misc">
 //        System.out.println("INPUT HIDDEN WEIGHTS");

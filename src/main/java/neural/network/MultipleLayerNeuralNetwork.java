@@ -47,7 +47,7 @@ public class MultipleLayerNeuralNetwork {
     }
 
     //<editor-fold defaultstate="collapsed" desc="Set Learning Rate">
-    void ssetLearningRate(double lr) {
+    void setLearningRate(double lr) {
         this.learningRate = lr;
     }
     //</editor-fold>
@@ -91,6 +91,7 @@ public class MultipleLayerNeuralNetwork {
     //</editor-fold>
     //</editor-fold>
 
+    //<editor-fold defaultstate="collapsed" desc="tarin(inputs, outputs)">
     public void train(double[] inputs, double[] outputs) {
 
         calulateOutput(inputs);
@@ -115,6 +116,7 @@ public class MultipleLayerNeuralNetwork {
 
     }
 
+    //<editor-fold defaultstate="collapsed" desc="calculateOuputOfCurrentLayer(weight, bias, input)">
     private Matrix calculateOuputOfCurrentLayer(Matrix wieghtMatrix, Matrix biasMatrix, Matrix inputMatrix) {
 
         Matrix result = Matrix.vectorMultiply(wieghtMatrix, inputMatrix);
@@ -123,6 +125,7 @@ public class MultipleLayerNeuralNetwork {
         return result;
 
     }
+    //</editor-fold>
 
     //</editor-fold>
    
@@ -135,10 +138,16 @@ public class MultipleLayerNeuralNetwork {
 //</editor-fold>
 
         //fix All Weight Matrices
+        //<editor-fold defaultstate="collapsed" desc="ArrayList<Matrix> weightMatrices = fixWieghtMatrices()">
         fixWieghtMatrices();
+        //</editor-fold>
+
 
         //fix All Bias Matrices
+        //<editor-fold defaultstate="collapsed" desc="ArrayList<Matrix> biasMatrices = fixBiasMatrices()">
         fixBiasMatrices();
+        //</editor-fold>
+
     }
 
     //<editor-fold defaultstate="collapsed" desc="calculateErrorMatrices(desiredOutput)">
@@ -208,6 +217,8 @@ public class MultipleLayerNeuralNetwork {
         );
     }
     //</editor-fold>
-//</editor-fold>
+    //</editor-fold>
+    //</editor-fold>
 
+    
 }
