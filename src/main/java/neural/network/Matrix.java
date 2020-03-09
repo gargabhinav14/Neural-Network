@@ -9,6 +9,30 @@ package neural.network;
  *
  * @author abhinav
  */
+//<editor-fold defaultstate="collapsed" desc="Matrix Demo">
+//         int[][] arr = {{1, 2}, {3, 4}};
+//         int [][] mat = {{1,2,3},{1,2,3},{1,2,3}};
+//        Matrix mat1 = new Matrix(2, 3);
+//        Matrix mat2 = new Matrix(3, 2);
+//         mat.randomize();
+//         mat.print();
+//         mat.add(2);
+//         mat.print();
+//         mat.subtract(2);
+//         mat.print();
+//        mat.randomize();
+//        mat.print();
+//        Matrix m3 = Matrix.transpose(mat);
+//        m3.print();
+//        Matrix m1 = Matrix.scalarMultiply(mat, mat);
+//        m1.print();
+//        mat1.randomize();
+//        mat2.randomize();
+//        mat1.print();
+//        mat2.print();
+//        Matrix m2 = Matrix.vectorMultiply(mat1, mat2);
+//        m2.print();
+//</editor-fold>
 public class Matrix {
 
     int rows;
