@@ -7,8 +7,8 @@ package neural.network;
 
 /**
  *
- * @author abhinav
+ * @author abhunavgarg
  */
-class i {
+public class Pooling {
     
 }

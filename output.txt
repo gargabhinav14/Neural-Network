@@ -1,0 +1,1 @@
+[neural.network.Matrix@6a024a67, neural.network.Matrix@7921b0a2, neural.network.Matrix@174d20a, neural.network.Matrix@66d2e7d9]

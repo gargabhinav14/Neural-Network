@@ -55,6 +55,10 @@ public class ConvoltionalNeuralNetwork {
          * Split the array to number_Of_Channels_In_The_Image-Dimensional Array
          */
         ArrayList<Matrix> imageMatrix = createImageMatrixFromArray(imageData, dimensions, channels);
+        Matrix filter = new Matrix(3, 3);
+        
+        ArrayList<Matrix> convolvedImage = Convolution.convolve(imageMatrix, filter);
+       
     }
 
     private ArrayList<Matrix> createImageMatrixFromArray(double[] imageData, int[] dimensions, int channels) {

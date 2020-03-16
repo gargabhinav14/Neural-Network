@@ -5,15 +5,15 @@
  */
 package neural.network;
 
-import java.awt.Image;
+import java.awt.Color;
 import java.awt.image.BufferedImage;
-import java.awt.image.ImageProducer;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.PrintStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Random;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 
 /**
@@ -23,6 +23,72 @@ import javax.imageio.ImageIO;
 public class Main {
 
     public static void main(String[] args) {
+
+//        System.out.println(System.currentTimeMillis());
+//        for (long i = 0L; i < 20000000000000000L; i++) {
+//
+//        }
+//        System.out.println(System.currentTimeMillis());
+
+//        BufferedImage image = 
+//        Color c = new Color(image.getRGB(j, i));
+        int width = 218;    //width of the image 
+        int height = 100;   //height of the image 
+
+        BufferedImage image = null;
+
+        // READ IMAGE 
+        try {
+            File input_file = new File("/home/abhunavgarg/Pictures/aaaa.jpg"); //image file path 
+
+            /* create an object of BufferedImage type and pass 
+               as parameter the width,  height and image int 
+               type.TYPE_INT_ARGB means that we are representing 
+               the Alpha, Red, Green and Blue component of the 
+               image pixel using 8 bit integer value. */
+            image = new BufferedImage(width, height,
+                    BufferedImage.TYPE_INT_ARGB);
+
+            // Reading input file 
+            image = ImageIO.read(input_file);
+            Matrix mRed = new Matrix(width, height);
+            Matrix mGreen = new Matrix(width, height);
+            Matrix mBlue = new Matrix(width, height);
+            Matrix mAlpha = new Matrix(width, height);
+//            image.getRGB(width, width)
+            for (int i = 0; i < width; i++) {
+                for (int j = 0; j < height; j++) {
+
+                    Color c = new Color(image.getRGB(i, j));
+                    mRed.data[i][j] = c.getRed();
+                    mGreen.data[i][j] = c.getGreen();
+                    mBlue.data[i][j] = c.getBlue();
+                    mAlpha.data[i][j] = c.getAlpha();
+//                    System.out.println("i:"+i + " j:"+j);
+                }
+            }
+            ArrayList<Matrix> channels = new ArrayList<>();
+
+            Matrix filter = Matrix.getRandomMatrix(3, 3);
+
+            channels.add(mRed);
+            channels.add(mGreen);
+            channels.add(mBlue);
+            channels.add(mAlpha);
+
+            ArrayList<Matrix> convolvedMatrix = Convolution.convolve(channels, filter);
+
+            PrintStream out = new PrintStream(new FileOutputStream("output.txt"));
+            System.setOut(out);
+            System.out.println(Arrays.toString(channels.toArray()));
+//            
+//
+//            m.print();
+
+            System.out.println("Reading complete.");
+        } catch (IOException e) {
+            System.out.println("Error: " + e);
+        }
 
         /**
          * create a network with input_count, perceptron_count, output_count
@@ -41,7 +107,7 @@ public class Main {
             alm.add(m);
 
         }
-        Convolution conv = new Convolution(alm, new Matrix(3, 3));
+//        Convolution conv = new Convolution(alm, new Matrix(3, 3));
 
 //        NeuralNetwork network = new NeuralNetwork(2, 2, 1);
         MultipleLayerNeuralNetwork multiNetwork = new MultipleLayerNeuralNetwork(2, new int[]{2}, 1);

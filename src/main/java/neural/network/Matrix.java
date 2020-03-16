@@ -292,25 +292,27 @@ public class Matrix {
 
         int newRows = arrayMat[0][0].rows * mrows;
         int newCols = arrayMat[0][0].cols * mCols;
+        
+        int innerGridRows = arrayMat[0][0].rows;
+        int innerGridCols = arrayMat[0][0].cols;
+        
         Matrix resultMatrix = new Matrix(newRows, newCols);
-        int column = 1;
-        for (int i = 1; i < mrows; i++) {
+        for (int i = 0; i < mrows; i++) {
             for (int j = 0; j < mCols; j++) {
                 Matrix matrix = arrayMat[i][j];
 
                 for (int k = 0; k < matrix.rows; k++) {
                     for (int l = 0; l < matrix.cols; l++) {
-                        System.out.println("p:" + p + "q:" + q);
-                        resultMatrix.data[k*p][l*q] = matrix.data[k][l];
+                        resultMatrix.data[k+p][l+q] = matrix.data[k][l];
                     }
                 }
 
-                q++;
+                q= q + innerGridCols;
             }
 
-            p++;
+            p = p+ innerGridRows;
+            q = 0;
         }
-        resultMatrix.print();
         return resultMatrix;
 
     }
