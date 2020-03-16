@@ -225,4 +225,99 @@ public class Matrix {
 
         return x * (1 - x);
     }
+
+    public static Matrix convert2DArrayToMatrix(Matrix[][] m) {
+//        Integer i = 0;
+//        String strI = i.toString();
+//        Integer j = 0;
+//        String strJ = j.toString();
+//
+//        int q = 0;
+//        int w = 0;
+//
+//        while (strI != null) {
+//            while (strJ != null) {
+//                strJq = m[q][w]
+//;                w++;
+//
+//            }
+//
+//            q++;
+//            strI = String.valueOf(q);
+//
+//        }
+//
+//        int row = 0;
+//        int col = 0;
+//        Matrix resultMatrix = new Matrix(q, w);
+//
+//        for (int e = 0; e < resultMatrix.rows; e++) {
+//            for (int r = 0; r < resultMatrix.cols; r++) {
+////                resultMatrix.data[e][r] = m[e][r];
+//                Matrix a = m[e][r];
+//
+//                for (int k = 0; k < a.rows; k++) {
+//                    for (int l = 0; l < a.cols; l++) {
+//
+//                        row = row++;
+//
+//                    }
+//                    col = col++;
+//                }
+//
+//            }
+//        }
+//
+//        Matrix finalResult = new Matrix(row, col);
+//
+//        for (int e = 0; e < resultMatrix.rows; e++) {
+//            for (int r = 0; r < resultMatrix.cols; r++) {
+//                Matrix a = m[e][r];
+//                for (int k = 0; k < a.rows; k++) {
+//                    for (int l = 0; l < a.cols; l++) {
+//                        finalResult.data[k + e][l + r] = a.data[k][l];
+//                    }
+//                }
+//            }
+//
+//        }
+//
+//        return finalResult;
+        Matrix[][] arrayMat = m;
+        int mrows = arrayMat.length;
+        int mCols = arrayMat[0].length;
+
+        int p = 0;
+        int q = 0;
+
+        int newRows = arrayMat[0][0].rows * mrows;
+        int newCols = arrayMat[0][0].cols * mCols;
+        Matrix resultMatrix = new Matrix(newRows, newCols);
+        int column = 1;
+        for (int i = 1; i < mrows; i++) {
+            for (int j = 0; j < mCols; j++) {
+                Matrix matrix = arrayMat[i][j];
+
+                for (int k = 0; k < matrix.rows; k++) {
+                    for (int l = 0; l < matrix.cols; l++) {
+                        System.out.println("p:" + p + "q:" + q);
+                        resultMatrix.data[k*p][l*q] = matrix.data[k][l];
+                    }
+                }
+
+                q++;
+            }
+
+            p++;
+        }
+        resultMatrix.print();
+        return resultMatrix;
+
+    }
+
+    public static Matrix getRandomMatrix(int rows, int cols) {
+        Matrix m = new Matrix(rows, cols);
+        m.randomize();
+        return m;
+    }
 }

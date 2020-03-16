@@ -5,7 +5,16 @@
  */
 package neural.network;
 
+import java.awt.Image;
+import java.awt.image.BufferedImage;
+import java.awt.image.ImageProducer;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Random;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.imageio.ImageIO;
 
 /**
  *
@@ -22,6 +31,18 @@ public class Main {
         double[][] input = {{0, 1}, {1, 0}, {0, 0}, {1, 1}};
         double[][] output = {{1}, {1}, {0}, {0}};
 
+        /**
+         * MyInterface myInterface = (String text) -> { System.out.print(text);
+         * };
+         */
+        ArrayList<Matrix> alm = new ArrayList<>();
+        for (int i = 0; i < 4; i++) {
+            Matrix m = Matrix.getRandomMatrix(9, 9);
+            alm.add(m);
+
+        }
+        Convolution conv = new Convolution(alm, new Matrix(3, 3));
+
 //        NeuralNetwork network = new NeuralNetwork(2, 2, 1);
         MultipleLayerNeuralNetwork multiNetwork = new MultipleLayerNeuralNetwork(2, new int[]{2}, 1);
 
@@ -31,7 +52,6 @@ public class Main {
 //        }
 //        network.wieghts_input_hidden.print();
 //        network.wieghts_hidden_output.print();
-
 //        }
         for (int i = 0; i < 100000; i++) {
             int rnd = new Random().nextInt(input.length);
@@ -48,7 +68,6 @@ public class Main {
 //        }
 //        network.wieghts_input_hidden.print();
 //        network.wieghts_hidden_output.print();
-
         System.out.println("+++++OUTPUTS+++++++");
         //<editor-fold defaultstate="collapsed" desc="test">
         double[] testa = multiNetwork.feedForward(input[0]);
