@@ -52,10 +52,13 @@ public class ConvoltionalNeuralNetwork {
     int numPoolingLayers;
     int filterRows;
     int filterCols;
-    ArrayList<Matrix> filterArrayList = new ArrayList<>();
+    ArrayList<Matrix> filterArrayList = new ArrayList<>();   ///////////////////////////MAIN GAME PLAYER (This needs the lesson)
     String poolingType;
     int poolingRows;
     int poolingCols;
+
+    ArrayList<ArrayList<Matrix>> convoledImageMatrixArrayList = new ArrayList<>();
+    ArrayList<ArrayList<Matrix>> pooledImageMatrixArrayList = new ArrayList<>();
 
     public ConvoltionalNeuralNetwork(int number_Of_Convolutional_Layers, int number_Of_Filters, int[] filterSize, int[] poolingSize, String poolingType) {
 
@@ -69,10 +72,13 @@ public class ConvoltionalNeuralNetwork {
         this.poolingCols = poolingSize[1];
 
         for (int i = 0; i < numFilters; i++) {
-            Matrix m = Matrix.getRandomMatrix(filterRows, filterCols);
+            Matrix m = Matrix.getRandomMatrix(this.filterRows, this.filterCols);
             this.filterArrayList.add(m);
         }
 
+        /**
+         * number of convolution layers = 5 number of filter {30,20,10,5,3}
+         */
     }
 
     public void feedForward(String filePath) throws IOException {
@@ -80,6 +86,10 @@ public class ConvoltionalNeuralNetwork {
         ArrayList<Matrix> imageMatrix = getArrayListFromImage(filePath);
 
         ArrayList<Matrix> newImageMatrix = doConvolution(imageMatrix);
+
+        int[] hidden_nodes_array = {2, 2};
+        MultipleLayerNeuralNetwork mlnn = new MultipleLayerNeuralNetwork(3, hidden_nodes_array, 2);
+//        mlnn.feedForward(newImageMatrix);
 
         BufferedImage resultImage = getImageFromArrayList(newImageMatrix);
 
@@ -91,16 +101,32 @@ public class ConvoltionalNeuralNetwork {
     //<editor-fold defaultstate="collapsed" desc="ArrayList<Matrix> newImageMatrix = doConvolution(ArrayList<Matrix> imageMatrix)">
     private ArrayList<Matrix> doConvolution(ArrayList<Matrix> imageMatrix) {
 
-        ArrayList<Matrix> convolvedImageMatrix = new ArrayList<>();
+        ArrayList<Matrix> newConvolvedImageMatrix = new ArrayList<>();
         ArrayList<Matrix> pooledImageMatrix = new ArrayList<>();
+        ArrayList<Matrix> rectifiedImageMatrix = new ArrayList<>();
 
-        for (int j = 0; j < this.numConvolutionalLayers; j++) {
-            for (int i = 0; i < this.numFilters; i++) {
-//                convolvedImageMatrix = convolve(imageMatrix, this.filterArrayList.get(i));
-                convolvedImageMatrix = convolve(imageMatrix, Matrix.filterLeftEdge());
-                pooledImageMatrix = pool(convolvedImageMatrix);
+//        for (int i = 0; i < this.numConvolutionalLayers; i++) {                                       can be used if bug found
+        double loopSize = Math.pow(this.numFilters, 2) - 1;
+        int counter = 0;
+        for (int i = 0; i <= this.pooledImageMatrixArrayList.size(); i++) {
+            for (int j = 0; j < this.numFilters; j++) {
+                if (i == 0) {
+                    newConvolvedImageMatrix = convolve(imageMatrix, this.filterArrayList.get(j));
+                    rectifiedImageMatrix = doRelu(newConvolvedImageMatrix);
+                    pooledImageMatrix = pool(rectifiedImageMatrix);
+                    this.pooledImageMatrixArrayList.add(pooledImageMatrix);
+                    counter++;
+                } else {
+                    newConvolvedImageMatrix = convolve(this.pooledImageMatrixArrayList.get(i), this.filterArrayList.get(j));
+                    rectifiedImageMatrix = doRelu(newConvolvedImageMatrix);
+                    pooledImageMatrix = pool(rectifiedImageMatrix);
+                    this.pooledImageMatrixArrayList.add(pooledImageMatrix);
+                    counter++;
+                }
             }
-            imageMatrix = pooledImageMatrix;
+            if (counter >= loopSize) {
+                break;
+            }
         }
         return imageMatrix;
     }
@@ -110,6 +136,7 @@ public class ConvoltionalNeuralNetwork {
     public ArrayList<Matrix> convolve(ArrayList<Matrix> channels, Matrix filter) {
 
         ArrayList<Matrix> resultChannels = new ArrayList<>();
+        int filterSum = filter.getSum();
 
         for (int i = 0; i < channels.size(); i++) {
             Matrix dataMatrix = channels.get(i);
@@ -122,24 +149,43 @@ public class ConvoltionalNeuralNetwork {
                             miniData.data[l][m] = dataMatrix.data[j + l][k + m];
                         }
                     }
-                    miniData = Matrix.vectorMultiply(miniData, filter);
+                    miniData = Matrix.scalarMultiply(miniData, filter);
 //                    miniData.fixNegative();
 //                    miniData.fixPositive();
-                    double sum = miniData.sumDiagonals();
-                    if (sum <= 0) {
-                        sum = 0;
+                    int sum = miniData.getSum();
+                    int val = sum / filterSum;
+
+                    if (val <= 0) {
+                        val = 0;
                     }
-                    if (sum >= 255) {
-                        sum = 255;
+                    if (val >= 255) {
+                        val = 255;
                     }
-                    resultMatrix.data[j][k] = sum;
+                    resultMatrix.data[j][k] = val;
                 }
             }
-//            resultMatrix.fixNegative();
-//            resultMatrix.fixPositive();
             resultChannels.add(resultMatrix);
         }
         return resultChannels;
+    }
+    //</editor-fold>
+
+    //<editor-fold defaultstate="collapsed" desc="ArrayList<Matrix> rectifiedImageMatrix = doRelu(ArrayList<Matrix> newConvolvedImageMatrix)">
+    public ArrayList<Matrix> doRelu(ArrayList<Matrix> newConvolvedImageMatrix) {
+        ArrayList<Matrix> rectifiedImageMatrix = new ArrayList<>();
+        for (Matrix m : newConvolvedImageMatrix) {
+            for (int i = 0; i < m.rows; i++) {
+                for (int j = 0; j < m.cols; j++) {
+                    if (m.data[i][j] <= 0) {
+                        m.data[i][j] = 0;
+                    } else if (m.data[i][j] >= 255) {
+                        m.data[i][j] = 255;
+                    }
+                }
+            }
+            rectifiedImageMatrix.add(m);
+        }
+        return rectifiedImageMatrix;
     }
     //</editor-fold>
 

@@ -334,7 +334,17 @@ public class Matrix {
                 sum += this.data[i][j];
             }
         }
-        sum = sum/(this.rows+this.cols);
+        sum = sum / (this.rows + this.cols);
+        return sum;
+    }
+
+    public int getSum() {
+        int sum = 0;
+        for (int i = 0; i < this.rows; i++) {
+            for (int j = 0; j < this.cols; j++) {
+                sum += this.data[i][j];
+            }
+        }
         return sum;
     }
 
@@ -342,13 +352,12 @@ public class Matrix {
         double check = -999999999;
         for (int i = 0; i < this.rows; i++) {
             for (int j = 0; j < this.cols; j++) {
-                if(this.data[i][j]>check)
-                {
+                if (this.data[i][j] > check) {
                     check = this.data[i][j];
                 }
             }
         }
-        return (int)check;
+        return (int) check;
     }
 
 }
