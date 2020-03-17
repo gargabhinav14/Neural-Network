@@ -5,6 +5,7 @@
  */
 package neural.network;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -14,8 +15,14 @@ import java.util.Random;
  */
 public class Main {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
+        
+        int[] a = {3,3};
+        ConvoltionalNeuralNetwork cnn = new ConvoltionalNeuralNetwork(3, 1, a, a,"average");
 
+        String filePath = "/home/abhunavgarg/Pictures/DirectReceiptFormat.png";
+        cnn.feedForward(filePath);
+//        cnn.getArrayListFromImage("/home/abhunavgarg/Pictures/DirectReceiptFormat.png");
         /**
          * create a network with input_count, perceptron_count, output_count
          *

@@ -264,4 +264,91 @@ public class Matrix {
         m.randomize();
         return m;
     }
+
+    static Matrix getRandomPositiveMatrix(int filterRows, int filterCols) {
+        Matrix m = new Matrix(filterRows, filterCols);
+        for (int i = 0; i < filterRows; i++) {
+            for (int j = 0; j < filterCols; j++) {
+                m.data[i][j] = Math.random();
+            }
+        }
+        return m;
+    }
+
+    public void fixNegative() {
+        for (int i = 0; i < this.rows; i++) {
+            for (int j = 0; j < this.cols; j++) {
+                if (this.data[i][j] <= 0) {
+                    this.data[i][j] = 0;
+                }
+            }
+        }
+
+    }
+
+    public void fixPositive() {
+        for (int i = 0; i < this.rows; i++) {
+            for (int j = 0; j < this.cols; j++) {
+                if (this.data[i][j] >= 255) {
+                    this.data[i][j] = 255;
+                }
+            }
+        }
+    }
+
+    public double sumDiagonals() {
+        double sum = 0;
+        for (int i = 0; i < this.rows; i++) {
+            for (int j = 0; j < this.cols; j++) {
+                if (i == j) {
+                    sum = sum + this.data[i][j];
+                }
+            }
+        }
+        return sum;
+
+    }
+
+    public static Matrix filterLeftEdge() {
+        Matrix filterM = new Matrix(3, 3);
+        for (int i = 0; i < filterM.rows; i++) {
+            for (int j = 0; j < filterM.cols; j++) {
+                if (j == 0) {
+                    filterM.data[i][j] = -1;
+                }
+                if (j == 1) {
+                    filterM.data[i][j] = 1;
+                }
+                if (j == 2) {
+                    filterM.data[i][j] = 0;
+                }
+            }
+        }
+        return filterM;
+    }
+
+    public int getAverageValue() {
+        int sum = 0;
+        for (int i = 0; i < this.rows; i++) {
+            for (int j = 0; j < this.cols; j++) {
+                sum += this.data[i][j];
+            }
+        }
+        sum = sum/(this.rows+this.cols);
+        return sum;
+    }
+
+    int getMaximumValue() {
+        double check = -999999999;
+        for (int i = 0; i < this.rows; i++) {
+            for (int j = 0; j < this.cols; j++) {
+                if(this.data[i][j]>check)
+                {
+                    check = this.data[i][j];
+                }
+            }
+        }
+        return (int)check;
+    }
+
 }
