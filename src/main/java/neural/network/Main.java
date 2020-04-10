@@ -16,11 +16,12 @@ import java.util.Random;
 public class Main {
 
     public static void main(String[] args) throws IOException {
-        
-        int[] a = {3,3};
-        ConvoltionalNeuralNetwork cnn = new ConvoltionalNeuralNetwork(3, 1, a, a,"average");
 
-        String filePath = "/home/abhunavgarg/Pictures/DirectReceiptFormat.png";
+        int[] filterSize = {9,9};
+        int[] poolSize = {11,11};
+        ConvoltionalNeuralNetwork cnn = new ConvoltionalNeuralNetwork(3, 2, filterSize, poolSize, "max");
+
+        String filePath = "/home/abhunavgarg/Pictures/Sample-Handwritten-28x28-Pixel-Images-from-MNIST.png";
         cnn.feedForward(filePath);
 //        cnn.getArrayListFromImage("/home/abhunavgarg/Pictures/DirectReceiptFormat.png");
         /**

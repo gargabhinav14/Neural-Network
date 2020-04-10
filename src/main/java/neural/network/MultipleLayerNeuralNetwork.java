@@ -5,10 +5,8 @@
  */
 package neural.network;
 
-import com.sun.javafx.geom.Matrix3f;
 import java.util.ArrayList;
 import java.util.Collections;
-import jdk.nashorn.internal.runtime.PropertyMap;
 
 /**
  *
@@ -16,6 +14,7 @@ import jdk.nashorn.internal.runtime.PropertyMap;
  */
 public class MultipleLayerNeuralNetwork {
 
+    //<editor-fold defaultstate="collapsed" desc="Global Variables">
     ArrayList<Matrix> weightMatrices = new ArrayList<>();   //0 ---> 1 ---> 2 ---> 3
     ArrayList<Matrix> biasMatrices = new ArrayList<>();     //0 ---> 1 ---> 2 ---> 3
     ArrayList<Matrix> outputMatrices = new ArrayList<>();   //3 ---> 2 ---> 1 ---> 0
@@ -28,26 +27,24 @@ public class MultipleLayerNeuralNetwork {
 
     int[] hidden_nodes_array;
     int hidden_nodes_array_length;
+//</editor-fold>
 
     //<editor-fold defaultstate="collapsed" desc="Set Neural Network Structure">
+    //<editor-fold defaultstate="collapsed" desc="Initialise MLNN">
     public MultipleLayerNeuralNetwork(int input_nodes, int[] hidden_nodes_array, int output_nodes) {
-
         //set hidden array and its length to a constant
         this.hidden_nodes_array = hidden_nodes_array;
         this.hidden_nodes_array_length = hidden_nodes_array.length;
-
         this.inputNodes = input_nodes;
         this.outputNodes = output_nodes;
-
         this.learningRate = 0.1;
 
         //create all wieght matrices
         this.weightMatrices = createWeightMatrices(input_nodes, hidden_nodes_array, output_nodes);
-
         //create all bias matrices
         this.biasMatrices = createBiasMatrices(hidden_nodes_array, output_nodes);
-
     }
+    //</editor-fold>
 
     //<editor-fold defaultstate="collapsed" desc="Set Learning Rate">
     void setLearningRate(double lr) {
@@ -149,6 +146,7 @@ public class MultipleLayerNeuralNetwork {
     //</editor-fold>
 
     //</editor-fold>
+  
     //<editor-fold defaultstate="collapsed" desc="fixAllWeightsAndBiases(outputs)">
     private void fixAllWeightsAndBiases(double[] desiredOutput) {
 
@@ -241,6 +239,7 @@ public class MultipleLayerNeuralNetwork {
     }
 
     //</editor-fold>
+    
     //<editor-fold defaultstate="collapsed" desc="fix Bias Matrices">
     private void fixBiasMatrices() {
 

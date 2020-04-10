@@ -338,8 +338,8 @@ public class Matrix {
         return sum;
     }
 
-    public int getSum() {
-        int sum = 0;
+    public double getSum() {
+        double sum = 0;
         for (int i = 0; i < this.rows; i++) {
             for (int j = 0; j < this.cols; j++) {
                 sum += this.data[i][j];

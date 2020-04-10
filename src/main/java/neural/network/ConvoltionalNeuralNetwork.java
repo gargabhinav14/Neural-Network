@@ -18,34 +18,7 @@ import javax.imageio.ImageIO;
  */
 public class ConvoltionalNeuralNetwork {
 
-    //<editor-fold defaultstate="collapsed" desc="misc">
-    /**
-     *
-     * About to build a Convolutional Neural Network
-     *
-     * What we need is
-     *
-     * => input image
-     *
-     * => convolutional layer => => => number of filters => => => filter size
-     *
-     * => pooling layer => => => type of pooling => => => stride (pooling matrix
-     * size)
-     *
-     *
-     *
-     *
-     * ArrayList<Matrix> convolvedMatrix =
-     * Convolution.convolve(channels,filter);
-     *
-     * PrintStream out = new PrintStream(new FileOutputStream("output.txt"));
-     * System.setOut(out);
-     * System.out.println(Arrays.toString(channels.toArray())); // // //
-     * m.print();
-     *
-     * System.out.println("Reading complete.");
-     */
-    //</editor-fold>
+    //<editor-fold defaultstate="collapsed" desc="Global Variables">
     int numLayers;
     int numFilters;
     int numConvolutionalLayers;
@@ -56,10 +29,13 @@ public class ConvoltionalNeuralNetwork {
     String poolingType;
     int poolingRows;
     int poolingCols;
+    int finalPooledImagesLength;
 
     ArrayList<ArrayList<Matrix>> convoledImageMatrixArrayList = new ArrayList<>();
     ArrayList<ArrayList<Matrix>> pooledImageMatrixArrayList = new ArrayList<>();
+    //</editor-fold>
 
+    //<editor-fold defaultstate="collapsed" desc="Initialize CNN">
     public ConvoltionalNeuralNetwork(int number_Of_Convolutional_Layers, int number_Of_Filters, int[] filterSize, int[] poolingSize, String poolingType) {
 
         this.numConvolutionalLayers = number_Of_Convolutional_Layers;
@@ -80,33 +56,46 @@ public class ConvoltionalNeuralNetwork {
          * number of convolution layers = 5 number of filter {30,20,10,5,3}
          */
     }
+    //</editor-fold>
 
+    //<editor-fold defaultstate="collapsed" desc="Feed Forward">
     public void feedForward(String filePath) throws IOException {
 
         ArrayList<Matrix> imageMatrix = getArrayListFromImage(filePath);
 
-        ArrayList<Matrix> newImageMatrix = doConvolution(imageMatrix);
+        ArrayList<ArrayList<Matrix>> newImageMatrix = doConvolution(imageMatrix);
 
         int[] hidden_nodes_array = {2, 2};
-        MultipleLayerNeuralNetwork mlnn = new MultipleLayerNeuralNetwork(3, hidden_nodes_array, 2);
 //        mlnn.feedForward(newImageMatrix);
+        double inputNodes = calculateInputNodesSize(newImageMatrix);
 
-        BufferedImage resultImage = getImageFromArrayList(newImageMatrix);
+        MultipleLayerNeuralNetwork mlnn = new MultipleLayerNeuralNetwork((int) inputNodes, hidden_nodes_array, 2);
 
-        File outputfile = new File("image.jpg");
-        ImageIO.write(resultImage, "jpg", outputfile);
+        for (int i = 0; i < newImageMatrix.size(); i++) {
+            BufferedImage resultImage = getImageFromArrayList(newImageMatrix.get(i));
 
+            File outputfile = new File("image" + i + ".jpg");
+            ImageIO.write(resultImage, "jpg", outputfile);
+        }
     }
+    //</editor-fold>
 
     //<editor-fold defaultstate="collapsed" desc="ArrayList<Matrix> newImageMatrix = doConvolution(ArrayList<Matrix> imageMatrix)">
-    private ArrayList<Matrix> doConvolution(ArrayList<Matrix> imageMatrix) {
+    private ArrayList<ArrayList<Matrix>> doConvolution(ArrayList<Matrix> imageMatrix) {
 
         ArrayList<Matrix> newConvolvedImageMatrix = new ArrayList<>();
         ArrayList<Matrix> pooledImageMatrix = new ArrayList<>();
         ArrayList<Matrix> rectifiedImageMatrix = new ArrayList<>();
 
 //        for (int i = 0; i < this.numConvolutionalLayers; i++) {                                       can be used if bug found
-        double loopSize = Math.pow(this.numFilters, 2) - 1;
+//        double loopSize = 0;
+        double loopSize = getLoopSize();
+
+//        if (this.numFilters == 1) {
+//            loopSize = this.numFilters * this.numConvolutionalLayers;
+//        } else {
+//            loopSize = Math.pow(this.numFilters, this.numConvolutionalLayers) - 1;
+//        }
         int counter = 0;
         for (int i = 0; i <= this.pooledImageMatrixArrayList.size(); i++) {
             for (int j = 0; j < this.numFilters; j++) {
@@ -117,7 +106,7 @@ public class ConvoltionalNeuralNetwork {
                     this.pooledImageMatrixArrayList.add(pooledImageMatrix);
                     counter++;
                 } else {
-                    newConvolvedImageMatrix = convolve(this.pooledImageMatrixArrayList.get(i), this.filterArrayList.get(j));
+                    newConvolvedImageMatrix = convolve(this.pooledImageMatrixArrayList.get(i - 1), this.filterArrayList.get(j));
                     rectifiedImageMatrix = doRelu(newConvolvedImageMatrix);
                     pooledImageMatrix = pool(rectifiedImageMatrix);
                     this.pooledImageMatrixArrayList.add(pooledImageMatrix);
@@ -128,7 +117,7 @@ public class ConvoltionalNeuralNetwork {
                 break;
             }
         }
-        return imageMatrix;
+        return this.pooledImageMatrixArrayList;
     }
     //</editor-fold>
 
@@ -136,7 +125,7 @@ public class ConvoltionalNeuralNetwork {
     public ArrayList<Matrix> convolve(ArrayList<Matrix> channels, Matrix filter) {
 
         ArrayList<Matrix> resultChannels = new ArrayList<>();
-        int filterSum = filter.getSum();
+        double filterSum = filter.getSum();
 
         for (int i = 0; i < channels.size(); i++) {
             Matrix dataMatrix = channels.get(i);
@@ -152,8 +141,8 @@ public class ConvoltionalNeuralNetwork {
                     miniData = Matrix.scalarMultiply(miniData, filter);
 //                    miniData.fixNegative();
 //                    miniData.fixPositive();
-                    int sum = miniData.getSum();
-                    int val = sum / filterSum;
+                    double sum = miniData.getSum();
+                    double val = sum / filterSum;
 
                     if (val <= 0) {
                         val = 0;
@@ -291,21 +280,66 @@ public class ConvoltionalNeuralNetwork {
 
         BufferedImage image = new BufferedImage(imageMatrix.get(0).rows, imageMatrix.get(0).cols, BufferedImage.TYPE_3BYTE_BGR);
 
-        for (int j = 0; j < imageMatrix.get(0).rows; j++) {
-            for (int k = 0; k < imageMatrix.get(0).cols; k++) {
-                Color c = new Color(
-                        (int) imageMatrix.get(0).data[j][k],
-                        (int) imageMatrix.get(1).data[j][k],
-                        (int) imageMatrix.get(2).data[j][k],
-                        (int) imageMatrix.get(3).data[j][k]);
-                image.setRGB(j, k, c.getRGB());
+        if (imageMatrix.size() == 4) {
+            for (int j = 0; j < imageMatrix.get(0).rows; j++) {
+                for (int k = 0; k < imageMatrix.get(0).cols; k++) {
+                    Color c = new Color(
+                            (int) imageMatrix.get(0).data[j][k],
+                            (int) imageMatrix.get(1).data[j][k],
+                            (int) imageMatrix.get(2).data[j][k],
+                            (int) imageMatrix.get(3).data[j][k]);
+                    image.setRGB(j, k, c.getRGB());
+                }
             }
+        } else if (imageMatrix.size() == 3) {
+            for (int j = 0; j < imageMatrix.get(0).rows; j++) {
+                for (int k = 0; k < imageMatrix.get(0).cols; k++) {
+                    Color c = new Color(
+                            (int) imageMatrix.get(0).data[j][k],
+                            (int) imageMatrix.get(1).data[j][k],
+                            (int) imageMatrix.get(2).data[j][k]
+                    );
+                    image.setRGB(j, k, c.getRGB());
+                }
+            }
+
         }
+
         return image;
 
 //        File outputfile = new File("image.jpg");
 //        ImageIO.write(image, "jpg", outputfile);
 //        image
+    }
+    //</editor-fold>
+
+    //<editor-fold defaultstate="collapsed" desc="double loopSize = getLoopSize()">
+    private double getLoopSize() {
+        double loopSize = 0;
+        if (this.numFilters == 1) {
+            loopSize = this.numFilters * this.numConvolutionalLayers;
+            this.finalPooledImagesLength = (int) loopSize;
+        } else {
+            this.finalPooledImagesLength = (int) Math.pow(this.numFilters, this.numConvolutionalLayers);
+            int count = 0;
+            for (int i = 1; i <= this.numConvolutionalLayers; i++) {
+                loopSize = loopSize + Math.pow(this.numFilters, this.numConvolutionalLayers - count);
+                count++;
+            }
+        }
+        return loopSize;
+    }
+    //</editor-fold>
+
+    //<editor-fold defaultstate="collapsed" desc=" double inputNodes = calculateInputNodesSize(ArrayList<ArrayList<Matrix>> newImageMatrix)">
+    private double calculateInputNodesSize(ArrayList<ArrayList<Matrix>> newImageMatrix) {
+
+        double total = 0;
+
+        return newImageMatrix.get(this.pooledImageMatrixArrayList.size() - 1).get(0).cols
+                * newImageMatrix.get(0).get(0).rows
+                * this.finalPooledImagesLength;
+
     }
     //</editor-fold>
 
