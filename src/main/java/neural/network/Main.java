@@ -17,11 +17,11 @@ public class Main {
 
     public static void main(String[] args) throws IOException {
 
-        int[] filterSize = {9,9};
-        int[] poolSize = {11,11};
+        int[] filterSize = {3,3};
+        int[] poolSize = {3,3};
         ConvoltionalNeuralNetwork cnn = new ConvoltionalNeuralNetwork(3, 2, filterSize, poolSize, "max");
 
-        String filePath = "/home/abhunavgarg/Pictures/Sample-Handwritten-28x28-Pixel-Images-from-MNIST.png";
+        String filePath = "/home/abhunavgarg/Pictures/avatar.jpg";
         cnn.feedForward(filePath);
 //        cnn.getArrayListFromImage("/home/abhunavgarg/Pictures/DirectReceiptFormat.png");
         /**

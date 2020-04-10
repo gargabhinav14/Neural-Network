@@ -326,6 +326,23 @@ public class Matrix {
         }
         return filterM;
     }
+        public static Matrix filterRightEdge() {
+        Matrix filterM = new Matrix(3, 3);
+        for (int i = 0; i < filterM.rows; i++) {
+            for (int j = 0; j < filterM.cols; j++) {
+                if (j == 0) {
+                    filterM.data[i][j] = 0;
+                }
+                if (j == 1) {
+                    filterM.data[i][j] = 1;
+                }
+                if (j == 2) {
+                    filterM.data[i][j] = -1;
+                }
+            }
+        }
+        return filterM;
+    }
 
     public int getAverageValue() {
         int sum = 0;

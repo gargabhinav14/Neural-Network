@@ -19,6 +19,7 @@ import javax.imageio.ImageIO;
 public class ConvoltionalNeuralNetwork {
 
     //<editor-fold defaultstate="collapsed" desc="Global Variables">
+    int globalCounter = 0;
     int numLayers;
     int numFilters;
     int numConvolutionalLayers;
@@ -50,6 +51,8 @@ public class ConvoltionalNeuralNetwork {
         for (int i = 0; i < numFilters; i++) {
             Matrix m = Matrix.getRandomMatrix(this.filterRows, this.filterCols);
             this.filterArrayList.add(m);
+//        this.filterArrayList.add(Matrix.filterLeftEdge());
+//        this.filterArrayList.add(Matrix.filterRightEdge());
         }
 
         /**
@@ -81,7 +84,7 @@ public class ConvoltionalNeuralNetwork {
     //</editor-fold>
 
     //<editor-fold defaultstate="collapsed" desc="ArrayList<Matrix> newImageMatrix = doConvolution(ArrayList<Matrix> imageMatrix)">
-    private ArrayList<ArrayList<Matrix>> doConvolution(ArrayList<Matrix> imageMatrix) {
+    private ArrayList<ArrayList<Matrix>> doConvolution(ArrayList<Matrix> imageMatrix) throws IOException {
 
         ArrayList<Matrix> newConvolvedImageMatrix = new ArrayList<>();
         ArrayList<Matrix> pooledImageMatrix = new ArrayList<>();
@@ -122,7 +125,7 @@ public class ConvoltionalNeuralNetwork {
     //</editor-fold>
 
     //<editor-fold defaultstate="collapsed" desc="ArrayList<Matrix> convolvedImageMatrix = convolve(ArrayList<Matrix> channels, Matrix filter)">
-    public ArrayList<Matrix> convolve(ArrayList<Matrix> channels, Matrix filter) {
+    public ArrayList<Matrix> convolve(ArrayList<Matrix> channels, Matrix filter) throws IOException {
 
         ArrayList<Matrix> resultChannels = new ArrayList<>();
         double filterSum = filter.getSum();
@@ -144,12 +147,6 @@ public class ConvoltionalNeuralNetwork {
                     double sum = miniData.getSum();
                     double val = sum / filterSum;
 
-                    if (val <= 0) {
-                        val = 0;
-                    }
-                    if (val >= 255) {
-                        val = 255;
-                    }
                     resultMatrix.data[j][k] = val;
                 }
             }
@@ -160,7 +157,7 @@ public class ConvoltionalNeuralNetwork {
     //</editor-fold>
 
     //<editor-fold defaultstate="collapsed" desc="ArrayList<Matrix> rectifiedImageMatrix = doRelu(ArrayList<Matrix> newConvolvedImageMatrix)">
-    public ArrayList<Matrix> doRelu(ArrayList<Matrix> newConvolvedImageMatrix) {
+    public ArrayList<Matrix> doRelu(ArrayList<Matrix> newConvolvedImageMatrix) throws IOException {
         ArrayList<Matrix> rectifiedImageMatrix = new ArrayList<>();
         for (Matrix m : newConvolvedImageMatrix) {
             for (int i = 0; i < m.rows; i++) {
@@ -179,22 +176,23 @@ public class ConvoltionalNeuralNetwork {
     //</editor-fold>
 
     //<editor-fold defaultstate="collapsed" desc="ArrayList<Matrix> pooledImageMatrix = pool(ArrayList<Matrix> convolvedImageMatrix)">
-    private ArrayList<Matrix> pool(ArrayList<Matrix> convolvedImageMatrix) {
+    private ArrayList<Matrix> pool(ArrayList<Matrix> convolvedImageMatrix) throws IOException {
 
         ArrayList<Matrix> resultChannels = new ArrayList<>();
 
-        int newRows = convolvedImageMatrix.get(0).rows - this.poolingRows + 1;
-        int newCols = convolvedImageMatrix.get(0).cols - this.poolingCols + 1;
+        int newRows = convolvedImageMatrix.get(0).rows / this.poolingRows;
+        int newCols = convolvedImageMatrix.get(0).cols / this.poolingCols;
         for (int i = 0; i < convolvedImageMatrix.size(); i++) {
             Matrix dataMatrix = convolvedImageMatrix.get(i);
             Matrix resultMatrix = new Matrix(newRows, newCols);
+            int a = 0;
             for (int j = 0; j < newRows; j++) {
+                int b = 0;
                 for (int k = 0; k < newCols; k++) {
-
                     Matrix miniData = new Matrix(this.poolingRows, this.poolingCols);
                     for (int l = 0; l < this.poolingRows; l++) {
                         for (int m = 0; m < this.poolingCols; m++) {
-                            double abc = dataMatrix.data[j + l][k + m];
+                            double abc = dataMatrix.data[a + l][b + m];
                             miniData.data[l][m] = abc;
                         }
                     }
@@ -204,15 +202,13 @@ public class ConvoltionalNeuralNetwork {
                     } else if (this.poolingType.equalsIgnoreCase("max")) {
                         val = miniData.getMaximumValue();
                     }
-                    if (val <= 0) {
-                        val = 0;
-                    }
-                    if (val >= 255) {
-                        val = 255;
-                    }
                     resultMatrix.data[j][k] = val;
-//                    resultMatrix.fixNegative();
-//                    resultMatrix.fixPositive();
+                    if (b < newCols * this.poolingCols - this.poolingCols) {
+                        b = b + this.poolingCols;
+                    }
+                }
+                if (a < newRows * this.poolingRows - this.poolingRows) {
+                    a = a + this.poolingRows;
                 }
             }
             resultChannels.add(resultMatrix);
@@ -265,6 +261,11 @@ public class ConvoltionalNeuralNetwork {
                         imageMatrix.get(2).data[i][j] = c.getBlue();
                         imageMatrix.get(3).data[i][j] = c.getAlpha();
                     }
+                    if (numberOfComponenets == 3) {
+                        imageMatrix.get(0).data[i][j] = c.getRed();
+                        imageMatrix.get(1).data[i][j] = c.getGreen();
+                        imageMatrix.get(2).data[i][j] = c.getBlue();
+                    }
                 }
             }
         } catch (IOException e) {
@@ -277,10 +278,11 @@ public class ConvoltionalNeuralNetwork {
 
     //<editor-fold defaultstate="collapsed" desc="BufferedImage resultImage = getImageFromArrayList(ArrayList<Matrix> imageMatrix)">
     private BufferedImage getImageFromArrayList(ArrayList<Matrix> imageMatrix) throws IOException {
-
-        BufferedImage image = new BufferedImage(imageMatrix.get(0).rows, imageMatrix.get(0).cols, BufferedImage.TYPE_3BYTE_BGR);
+        BufferedImage image = null;
 
         if (imageMatrix.size() == 4) {
+            image = new BufferedImage(imageMatrix.get(0).rows, imageMatrix.get(0).cols, BufferedImage.TYPE_3BYTE_BGR);
+
             for (int j = 0; j < imageMatrix.get(0).rows; j++) {
                 for (int k = 0; k < imageMatrix.get(0).cols; k++) {
                     Color c = new Color(
@@ -292,6 +294,8 @@ public class ConvoltionalNeuralNetwork {
                 }
             }
         } else if (imageMatrix.size() == 3) {
+            image = new BufferedImage(imageMatrix.get(0).rows, imageMatrix.get(0).cols, BufferedImage.TYPE_INT_RGB);
+
             for (int j = 0; j < imageMatrix.get(0).rows; j++) {
                 for (int k = 0; k < imageMatrix.get(0).cols; k++) {
                     Color c = new Color(
@@ -334,10 +338,8 @@ public class ConvoltionalNeuralNetwork {
     //<editor-fold defaultstate="collapsed" desc=" double inputNodes = calculateInputNodesSize(ArrayList<ArrayList<Matrix>> newImageMatrix)">
     private double calculateInputNodesSize(ArrayList<ArrayList<Matrix>> newImageMatrix) {
 
-        double total = 0;
-
         return newImageMatrix.get(this.pooledImageMatrixArrayList.size() - 1).get(0).cols
-                * newImageMatrix.get(0).get(0).rows
+                * newImageMatrix.get(this.pooledImageMatrixArrayList.size() - 1).get(0).rows
                 * this.finalPooledImagesLength;
 
     }
