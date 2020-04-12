@@ -18,8 +18,10 @@ public class Main {
     public static void main(String[] args) throws IOException {
 
         int[] filterSize = {3,3};
-        int[] poolSize = {3,3};
-        ConvoltionalNeuralNetwork cnn = new ConvoltionalNeuralNetwork(3, 2, filterSize, poolSize, "max");
+        int[] poolSize = {2,2};
+        int[] hiddenNodeArray = {64,32,16,4};
+        int outputNodes = 2;
+        ConvoltionalNeuralNetwork cnn = new ConvoltionalNeuralNetwork(2, 2, filterSize, poolSize, "max",hiddenNodeArray,outputNodes);
 
         String filePath = "/home/abhunavgarg/Pictures/avatar.jpg";
         cnn.feedForward(filePath);
