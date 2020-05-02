@@ -40,7 +40,7 @@ public class ConvoltionalNeuralNetwork {
     //</editor-fold>
 
     //<editor-fold defaultstate="collapsed" desc="Initialize CNN">
-    public ConvoltionalNeuralNetwork(int number_Of_Convolutional_Layers, int number_Of_Filters, int[] filterSize, int[] poolingSize, String poolingType, int[] hiddenNodeArray,int outputNodes) {
+    public ConvoltionalNeuralNetwork(int number_Of_Convolutional_Layers, int number_Of_Filters, int[] filterSize, int[] poolingSize, String poolingType) {
 
         this.numConvolutionalLayers = number_Of_Convolutional_Layers;
         this.numPoolingLayers = this.numConvolutionalLayers;
@@ -50,7 +50,8 @@ public class ConvoltionalNeuralNetwork {
         this.poolingType = poolingType;
         this.poolingRows = poolingSize[0];
         this.poolingCols = poolingSize[1];
-        this.hiddenNodeArray = hiddenNodeArray;
+//        this.hiddenNodeArray = hiddenNodeArray;
+//        this.outputNodes = outputNodes;
 
         for (int i = 0; i < numFilters; i++) {
             Matrix m = Matrix.getRandomMatrix(this.filterRows, this.filterCols);
@@ -66,7 +67,7 @@ public class ConvoltionalNeuralNetwork {
     //</editor-fold>
 
     //<editor-fold defaultstate="collapsed" desc="Feed Forward">
-    public void feedForward(String filePath) throws IOException {
+    public double[] feedForward(String filePath) throws IOException {
 
         ArrayList<Matrix> imageMatrix = getArrayListFromImage(filePath);
 
@@ -75,18 +76,18 @@ public class ConvoltionalNeuralNetwork {
 //        mlnn.feedForward(newImageMatrix);
         double inputNodes = calculateInputNodesSize(newImageMatrix);
 
-        double[] data = flatTheOutput(newImageMatrix, inputNodes);
+//        return flatTheOutput(newImageMatrix, inputNodes);
+//        MultipleLayerNeuralNetwork mlnn = new MultipleLayerNeuralNetwork((int) inputNodes, this.hiddenNodeArray, this.outputNodes);
+//        double[] output = mlnn.feedForward(data);
+//        for (int i = 0; i < newImageMatrix.size(); i++) {
+//            BufferedImage resultImage = getImageFromArrayList(newImageMatrix.get(i));
+//
+//            File outputfile = new File("image" + i + ".jpg");
+//            ImageIO.write(resultImage, "jpg", outputfile);
+//        }
+        return flatTheOutput(newImageMatrix, inputNodes);
 
-        MultipleLayerNeuralNetwork mlnn = new MultipleLayerNeuralNetwork((int) inputNodes, this.hiddenNodeArray, this.outputNodes);
-
-        double[] output = mlnn.feedForward(data);
-        
-        for (int i = 0; i < newImageMatrix.size(); i++) {
-            BufferedImage resultImage = getImageFromArrayList(newImageMatrix.get(i));
-
-            File outputfile = new File("image" + i + ".jpg");
-            ImageIO.write(resultImage, "jpg", outputfile);
-        }
+//        return data;
     }
     //</editor-fold>
 
@@ -349,7 +350,7 @@ public class ConvoltionalNeuralNetwork {
         return newImageMatrix.get(this.pooledImageMatrixArrayList.size() - 1).get(0).cols
                 * newImageMatrix.get(this.pooledImageMatrixArrayList.size() - 1).get(0).rows
                 * this.finalPooledImagesLength
-                *this.numberOfComponents;
+                * this.numberOfComponents;
 
     }
     //</editor-fold>
