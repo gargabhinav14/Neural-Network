@@ -14,7 +14,7 @@ import java.util.Random;
  * @author abhinav
  */
 public class MLNNRunner {
-
+    
     public static void main(String[] args) throws IOException {
         /**
          * create a network with input_count, perceptron_count, output_count
@@ -27,15 +27,17 @@ public class MLNNRunner {
          * MyInterface myInterface = (String text) -> { System.out.print(text);
          * };
          */
-        ArrayList<Matrix> alm = new ArrayList<>();
-        for (int i = 0; i < 4; i++) {
-            Matrix m = Matrix.getRandomMatrix(9, 9);
-            alm.add(m);
-
-        }
+//        ArrayList<Matrix> alm = new ArrayList<>();
+//        for (int i = 0; i < 4; i++) {
+//            Matrix m = Matrix.getRandomMatrix(9, 9);
+//            alm.add(m);
+//
+//        }
 //        Convolution conv = new Convolution(alm, new Matrix(3, 3));
-
 //        NeuralNetwork network = new NeuralNetwork(2, 2, 1);
+        int[] hiddenNodeArray = {2};
+        int outputNodes = 1;
+        
         MultipleLayerNeuralNetwork multiNetwork = new MultipleLayerNeuralNetwork(2, new int[]{2}, 1);
 
 //        for (int i = 0; i < multiNetwork.weightMatrices.size(); i++) {
@@ -45,13 +47,17 @@ public class MLNNRunner {
 //        network.wieghts_input_hidden.print();
 //        network.wieghts_hidden_output.print();
 //        }
-        for (int i = 0; i < 100000; i++) {
+        multiNetwork.setLearningRate(0.2);
+        for (int i = 0; i < 10000; i++) {
+            if (i % 500 == 0) {
+                System.out.println("Trained : " + i);
+            }
             int rnd = new Random().nextInt(input.length);
-
+            
             multiNetwork.train(input[rnd], output[rnd]);
 //            network.train(input[rnd], output[rnd]);
         }
-
+        
         System.out.println("+++++NEW WEIGHTS+++++++");
 
 //        for (int i = 0; i < multiNetwork.weightMatrices.size(); i++) {
@@ -76,7 +82,7 @@ public class MLNNRunner {
         Matrix.toMatrix(testb).print();
         Matrix.toMatrix(testc).print();
         Matrix.toMatrix(testd).print();
-
+        
     }
-
+    
 }

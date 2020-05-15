@@ -6,12 +6,11 @@
 package neural.network;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.Random;
-import java.util.TimeZone;
 
 /**
  *
@@ -23,10 +22,10 @@ public class CNNRunner {
 
         int[] filterSize = {3, 3};
         int[] poolSize = {2, 2};
-        int[] hiddenNodeArray = {100, 50};
+        int[] hiddenNodeArray = {300, 100};
         int outputNodes = 1;
 
-        ConvoltionalNeuralNetwork cnn = new ConvoltionalNeuralNetwork(1, 2, filterSize, poolSize, "max");
+        ConvoltionalNeuralNetwork cnn = new ConvoltionalNeuralNetwork(2, 2, filterSize, poolSize, "average");
 
         /**
          * do this for all images i.e. get Data
@@ -41,7 +40,7 @@ public class CNNRunner {
         ArrayList<double[]> finalOutput = new ArrayList<>();
 
         for (int i = 0; i < files.length; i++) {
-//        for (int i = 0; i < 1; i++) {
+//        for (int i = 0; i < 500; i++) {
             if (i % 500 == 0) {
                 System.out.println("CONVOLVED : " + i);
             }
@@ -54,10 +53,23 @@ public class CNNRunner {
         System.out.println("INPUT NODES --------------------------------------------------" + finalInput.get(0).length);
 //        int[] hiddenNodeArray = {finalInput.get(0).length / 2, finalInput.get(0).length / 4};
 
+        //<editor-fold defaultstate="collapsed" desc="write arrayList to a file">
+        try {
+            FileOutputStream writeData = new FileOutputStream("finalInput.ser");
+            ObjectOutputStream writeStream = new ObjectOutputStream(writeData);
+
+            writeStream.writeObject(finalInput);
+            writeStream.flush();
+            writeStream.close();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+//</editor-fold>
         MultipleLayerNeuralNetwork mnn = new MultipleLayerNeuralNetwork(finalInput.get(0).length, hiddenNodeArray, outputNodes);
 
         for (int j = 0; j < 120000; j++) {
-//        for (int j = 0; j < 1; j++) {
+//        for (int j = 0; j < 500; j++) {
             if (j % 500 == 0) {
                 System.out.println("TRAINED : " + j);
             }
@@ -77,7 +89,7 @@ public class CNNRunner {
 
 //        ConvoltionalNeuralNetwork cnn1 = new ConvoltionalNeuralNetwork(1, 2, filterSize, poolSize, "max");
         for (int i = 0; i < files1.length; i++) {
-//        for (int i = 0; i < 1; i++) {
+//        for (int i = 0; i < 500; i++) {
             if (i % 500 == 0) {
                 System.out.println("CONVOLVED : " + i);
             }
@@ -88,36 +100,25 @@ public class CNNRunner {
         }
 
 //        MultipleLayerNeuralNetwork mnn = new MultipleLayerNeuralNetwork(finalInput1.get(0).length, hiddenNodeArray, outputNodes);
-        int counter = 0;
+        Integer counter = 0;
         System.out.println("INPUT NODES --------------------------------------------------" + finalInput1.get(0).length);
         for (int j = 0; j < files1.length; j++) {
+//        for (int j = 0; j < 500; j++) {
             double[] calculatedOutput = mnn.feedForward(finalInput1.get(j));
             if (j % 500 == 0) {
                 System.out.println("TRAINED : " + j);
                 System.out.println("Desired : " + desiredOutput.get(j)[0] + " || Calculated : " + calculatedOutput[0]);
-                if (Math.abs((desiredOutput.get(j)[0] - Math.round(calculatedOutput[0]))) < 0.05) {
-                    counter++;
-                }
+            }
+            double diff = Math.abs(desiredOutput.get(j)[0] - calculatedOutput[0]);
+            if (diff < 0.5) {
+                counter++;
             }
         }
         System.out.println("COUNTER : " + counter);
-        int rate = (counter / 10000) * 100;
+        double rate = counter * (100 / finalInput1.size());
         System.out.println("RATE : " + rate + "%");
         //</editor-fold>
 
-        Matrix.toMatrix(mnn.feedForward(finalInput1.get(0))).print();
-        System.out.println("Output Expected" + desiredOutput.get(0)[0]);
-        Matrix.toMatrix(mnn.feedForward(finalInput1.get(0))).print();
-        System.out.println("Output Expected" + desiredOutput.get(11111)[0]);
-        Matrix.toMatrix(mnn.feedForward(finalInput1.get(11111))).print();
-        System.out.println("Output Expected" + desiredOutput.get(22222)[0]);
-        Matrix.toMatrix(mnn.feedForward(finalInput1.get(22222))).print();
-        System.out.println("Output Expected" + desiredOutput.get(33333)[0]);
-        Matrix.toMatrix(mnn.feedForward(finalInput1.get(33333))).print();
-        System.out.println("Output Expected" + desiredOutput.get(44444)[0]);
-        Matrix.toMatrix(mnn.feedForward(finalInput1.get(44444))).print();
-        System.out.println("Output Expected" + desiredOutput.get(55555)[0]);
-        Matrix.toMatrix(mnn.feedForward(finalInput1.get(55555))).print();
     }
 
     private static double[] getOutput(String path) {

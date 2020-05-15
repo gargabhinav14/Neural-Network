@@ -85,6 +85,8 @@ public class ConvoltionalNeuralNetwork {
 //            File outputfile = new File("image" + i + ".jpg");
 //            ImageIO.write(resultImage, "jpg", outputfile);
 //        }
+        reInitializeVaribales();
+
         return flatTheOutput(newImageMatrix, inputNodes);
 
 //        return data;
@@ -210,7 +212,7 @@ public class ConvoltionalNeuralNetwork {
                     } else if (this.poolingType.equalsIgnoreCase("max")) {
                         val = miniData.getMaximumValue();
                     }
-                    resultMatrix.data[j][k] = val;
+                    resultMatrix.data[j][k] = val;                          
                     if (b < newCols * this.poolingCols - this.poolingCols) {
                         b = b + this.poolingCols;
                     }
@@ -369,7 +371,8 @@ public class ConvoltionalNeuralNetwork {
                 Matrix mat = imageData.get(j);
                 for (int k = 0; k < mat.rows; k++) {
                     for (int l = 0; l < mat.cols; l++) {
-                        data.add(mat.data[k][l]);
+//                        data.add(mat.data[k][l]);
+                        data.add(1-(mat.data[k][l]/255));
                     }
                 }
             }
@@ -378,6 +381,11 @@ public class ConvoltionalNeuralNetwork {
             response[m] = data.get(m);
         }
         return response;
+    }
+
+    private void reInitializeVaribales() {
+        this.convoledImageMatrixArrayList = new ArrayList<>();
+        this.pooledImageMatrixArrayList = new ArrayList<>();
     }
 
 }
