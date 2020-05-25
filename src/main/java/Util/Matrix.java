@@ -3,7 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package neural.network;
+package Util;
+
+import java.io.Serializable;
 
 /**
  *
@@ -33,11 +35,13 @@ package neural.network;
 //        Matrix m2 = Matrix.vectorMultiply(mat1, mat2);
 //        m2.print();
 //</editor-fold>
-public class Matrix {
+public class Matrix implements Serializable {
 
-    int rows;
-    int cols;
-    double[][] data;
+    private static final long serialVersionUID = 1L;
+
+    public int rows;
+    public int cols;
+    public double[][] data;
 
     public Matrix(int rows, int cols) {
 
@@ -326,7 +330,8 @@ public class Matrix {
         }
         return filterM;
     }
-        public static Matrix filterRightEdge() {
+
+    public static Matrix filterRightEdge() {
         Matrix filterM = new Matrix(3, 3);
         for (int i = 0; i < filterM.rows; i++) {
             for (int j = 0; j < filterM.cols; j++) {
@@ -365,7 +370,7 @@ public class Matrix {
         return sum;
     }
 
-    int getMaximumValue() {
+    public int getMaximumValue() {
         double check = -999999999;
         for (int i = 0; i < this.rows; i++) {
             for (int j = 0; j < this.cols; j++) {
@@ -375,6 +380,14 @@ public class Matrix {
             }
         }
         return (int) check;
+    }
+
+    public void setToZero() {
+        for (int i = 0; i < this.rows; i++) {
+            for (int j = 0; j < this.cols; j++) {
+                this.data[i][j] = 0;
+            }
+        }
     }
 
 }

@@ -3,8 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package neural.network;
+package Lib;
 
+import Util.Matrix;
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -24,6 +25,7 @@ public class MultipleLayerNeuralNetwork {
     int inputNodes;
     int outputNodes;
     double learningRate;
+    private boolean sigmoidRequired = true;
 
     int[] hidden_nodes_array;
     int hidden_nodes_array_length;
@@ -47,13 +49,17 @@ public class MultipleLayerNeuralNetwork {
     //</editor-fold>
 
     //<editor-fold defaultstate="collapsed" desc="Set Learning Rate">
-    void setLearningRate(double lr) {
+    public void setLearningRate(double lr) {
         this.learningRate = lr;
+    }
+
+    public void sigmoidRequired(boolean val) {
+        this.sigmoidRequired = val;
     }
     //</editor-fold>
 
     //<editor-fold defaultstate="collapsed" desc="Create Weight and bias Matrices">
-    private ArrayList<Matrix> createWeightMatrices(int input_nodes, int[] hidden_nodes_array, int output_nodes) {
+    public ArrayList<Matrix> createWeightMatrices(int input_nodes, int[] hidden_nodes_array, int output_nodes) {
 
         ArrayList<Matrix> weightMatrices = new ArrayList<>();
 
@@ -83,7 +89,7 @@ public class MultipleLayerNeuralNetwork {
         return weightMatrices;
     }
 
-    private ArrayList<Matrix> createBiasMatrices(int[] hidden_nodes_array, int output_nodes) {
+    public ArrayList<Matrix> createBiasMatrices(int[] hidden_nodes_array, int output_nodes) {
         ArrayList<Matrix> biasMatrices = new ArrayList<>();
 
         for (int i = 0; i <= this.hidden_nodes_array_length; i++) {
@@ -108,8 +114,7 @@ public class MultipleLayerNeuralNetwork {
     //<editor-fold defaultstate="collapsed" desc="train(inputs, outputs)">
     public void train(double[] inputs, double[] outputs) {
 
-        this.outputMatrices = new ArrayList<>();   //3 ---> 2 ---> 1 ---> 0
-        this.errorMatrices = new ArrayList<>();    //3 ---> 2 ---> 1 ---> 0
+        initializeVariables();
         this.inputMatrix = Matrix.toMatrix(inputs);
 
         calulateOutput(inputs);
@@ -120,7 +125,7 @@ public class MultipleLayerNeuralNetwork {
     }
 
     //<editor-fold defaultstate="collapsed" desc="ArrayList<Matrix> outputMatrices = calulateOutput(inputs)">
-    private void calulateOutput(double[] inputs) {
+    public void calulateOutput(double[] inputs) {
 
         for (int i = 0; i <= this.hidden_nodes_array_length; i++) {
             if (i == 0) {
@@ -139,16 +144,17 @@ public class MultipleLayerNeuralNetwork {
 
         Matrix result = Matrix.vectorMultiply(wieghtMatrix, inputMatrix);
         result.add(biasMatrix);
-        result.doSigmoid();
+        if (!this.sigmoidRequired == false) {
+            result.doSigmoid();
+        }
         return result;
 
     }
     //</editor-fold>
 
     //</editor-fold>
-  
     //<editor-fold defaultstate="collapsed" desc="fixAllWeightsAndBiases(outputs)">
-    private void fixAllWeightsAndBiases(double[] desiredOutput) {
+    public void fixAllWeightsAndBiases(double[] desiredOutput) {
 
         //calculate Error Matrices
         //<editor-fold defaultstate="collapsed" desc="ArrayList<Matrix> errorMatrices = calculateErrorMatrices(desiredOutput)">
@@ -239,7 +245,6 @@ public class MultipleLayerNeuralNetwork {
     }
 
     //</editor-fold>
-    
     //<editor-fold defaultstate="collapsed" desc="fix Bias Matrices">
     private void fixBiasMatrices() {
 
@@ -283,5 +288,10 @@ public class MultipleLayerNeuralNetwork {
         return this.outputMatrices.get(this.hidden_nodes_array_length).toArray();
     }
     //</editor-fold>
+
+    private void initializeVariables() {
+        this.outputMatrices = new ArrayList<>();   //3 ---> 2 ---> 1 ---> 0
+        this.errorMatrices = new ArrayList<>();    //3 ---> 2 ---> 1 ---> 0    
+    }
 
 }

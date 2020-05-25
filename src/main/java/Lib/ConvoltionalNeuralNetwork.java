@@ -3,8 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package neural.network;
+package Lib;
 
+import Util.Matrix;
 import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -26,7 +27,7 @@ public class ConvoltionalNeuralNetwork {
     int numPoolingLayers;
     int filterRows;
     int filterCols;
-    ArrayList<Matrix> filterArrayList = new ArrayList<>();   ///////////////////////////MAIN GAME PLAYER (This needs the lesson)
+    ArrayList<Matrix> filterArrayList = new ArrayList<>();   ///////////////////////////MAIN GAME PLAYER (This needs the lesson too)
     String poolingType;
     int poolingRows;
     int poolingCols;

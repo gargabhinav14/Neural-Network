@@ -3,8 +3,10 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package neural.network;
+package NeuralNetwork;
 
+import Lib.ConvoltionalNeuralNetwork;
+import Lib.MultipleLayerNeuralNetwork;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -16,7 +18,7 @@ import java.util.Random;
  *
  * @author abhunavgarg
  */
-public class CNNRunner {
+public class RunnerCNN {
 
     public static void main(String[] args) throws IOException {
 

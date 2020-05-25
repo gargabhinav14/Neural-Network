@@ -3,8 +3,10 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package neural.network;
+package NeuralNetwork;
 
+import Lib.MultipleLayerNeuralNetwork;
+import Util.Matrix;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Random;
@@ -13,7 +15,7 @@ import java.util.Random;
  *
  * @author abhinav
  */
-public class MLNNRunner {
+public class RunnerMLNN {
     
     public static void main(String[] args) throws IOException {
         /**
